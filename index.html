@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Helper</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #eef1f5; margin: 0; padding: 2em; }
+    header { background: #004aad; color: white; padding: 1em; text-align: center; }
+    h1 { margin: 0; }
+    #gallery { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 2em; justify-content: center; }
+    .item { background: white; padding: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .item img { max-width: 200px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📚 Student Helper - Study Materials</h1>
+  </header>
+  <main>
+    <div id="gallery"></div>
+  </main>
+
+  <script type="module">
+    import { getStorage, ref, listAll, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
+    import { app } from './firebase-config.js';
+    const storage = getStorage(app);
+
+    const listRef = ref(storage, 'study-materials');
+    const gallery = document.getElementById("gallery");
+
+    listAll(listRef).then((res) => {
+      res.items.forEach((itemRef) => {
+        getDownloadURL(itemRef).then((url) => {
+          const div = document.createElement("div");
+          div.className = "item";
+          div.innerHTML = `<img src="${url}" alt="Study Material" />`;
+          gallery.appendChild(div);
+        });
+      });
+    }).catch((error) => {
+      console.error("Error loading images: ", error);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel - Upload Study Materials</title>
+  <style>
+    body { font-family: Arial; padding: 2em; background: #f7f9fc; text-align: center; }
+    h1 { color: #333; }
+    input[type="file"] { margin: 1em 0; }
+    button { padding: 10px 20px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h1>Upload Study Material</h1>
+  <input type="file" id="fileInput" />
+  <button onclick="uploadFile()">Upload</button>
+
+  <script type="module">
+    import { getStorage, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
+    import { app } from './firebase-config.js';
+    const storage = getStorage(app);
+
+    window.uploadFile = function () {
+      const fileInput = document.getElementById("fileInput");
+      const file = fileInput.files[0];
+      if (!file) return alert("Please select a file.");
+
+      const storageRef = ref(storage, 'study-materials/' + file.name);
+      uploadBytes(storageRef, file).then(() => {
+        alert("Upload successful!");
+      }).catch(err => {
+        alert("Upload failed: " + err);
+      });
+    };
+  </script>
+</body>
+</html>
